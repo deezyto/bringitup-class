@@ -50,7 +50,11 @@ export default class SliderPages extends Slider {
       this.trigger(this.nextSlideSelector[1]);
     } catch {}
     
-    this.trigger(this.firstSlideSelector);
-
+    try {
+      this.trigger(this.firstSlideSelector);
+    } catch {
+      
+    }
+    
   }
 }

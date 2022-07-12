@@ -1,3 +1,4 @@
+import SliderMini from "./modules/slider/sliderMini";
 import SliderPages from "./modules/slider/sliderPage";
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -7,5 +8,14 @@ window.addEventListener('DOMContentLoaded', () => {
     prevSlideSelector: '.prevmodule',
     firstSlideSelector: '.sidecontrol a'
   });
+
   sliderPage.init();
+
+  const sliderMini = new SliderMini({
+    parentSelector: '.showup__content-slider', 
+    nextSlideSelector: ['.showup__next'],
+    prevSlideSelector: '.showup__prev'
+  });
+
+  sliderMini.render();
 });

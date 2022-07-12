@@ -6,5 +6,6 @@ export default class Slider {
     this.nextSlideSelector = nextSlideSelector;
     this.firstSlideSelector = firstSlideSelector;
     this.slideIndex = 0;
+    this.slides = this.parentSelector.children.length;
   }
 }
