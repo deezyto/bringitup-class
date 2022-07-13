@@ -33,15 +33,31 @@ export default class SliderMini extends Slider {
         this.parentSelector.insertBefore(this.parentSelector.children[0], this.parentSelector.children[this.slides - lastSlides]);
       }
     }
-
   }
 
   autoSlide(selector) {
-    this.flippingInterval = setInterval(() => {
-      this.prevNextSlide(selector);
-      this.hide();
-      this.show();
-    }, 5000);
+    let number = 0;
+    document.querySelectorAll(this.nextSlideSelector[1]).forEach(elem => {
+      elem.addEventListener('click', () => {
+        if (document.querySelector('.modules').style.display === 'block') {
+          this.flippingInterval = setInterval(() => {
+            this.prevNextSlide(selector);
+            this.hide();
+            this.show();
+            number += this.stepSlide;
+          }, 5000);
+
+        } else if (document.querySelector('.modules').style.display === 'none') {
+          clearInterval(this.flippingInterval);
+          for (let i = 0; i < number; i++) {
+            this.parentSelector.insertBefore(this.parentSelector.children[this.slides - 1], this.parentSelector.children[0]);
+          }
+          this.hide();
+          this.show();
+          number = 0;
+        }
+      });
+    });
   }
 
   mouseMove(selector) {
@@ -76,6 +92,7 @@ export default class SliderMini extends Slider {
       this.autoSlide(this.nextSlideSelector[0]);
       this.mouseMove(this.mouseMoveSelector);
     }
+    
   }
 
 }

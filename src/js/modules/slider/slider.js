@@ -4,8 +4,6 @@ export default class Slider {
     prevSlideSelector = null, 
     nextSlideSelector = null, 
     firstSlideSelector = null,
-    titleSlideSelector = null,
-    arrowSlideSelector = null,
     activeSlideClass = null,
     stepSlide = 1,
     autoSlideFlipping = false,
@@ -17,10 +15,7 @@ export default class Slider {
     this.nextSlideSelector = nextSlideSelector;
     this.firstSlideSelector = firstSlideSelector;
     this.slideIndex = 0;
-    this.pageIndex = 0;
     this.slides = this.parentSelector.children.length;
-    this.titleSlideSelector = titleSlideSelector;
-    this.arrowSlideSelector = arrowSlideSelector;
     this.activeSlideClass = activeSlideClass;
     this.stepSlide = stepSlide;
     this.autoSlideFlipping = autoSlideFlipping;

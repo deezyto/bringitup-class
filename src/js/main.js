@@ -23,7 +23,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const sliderModules = new SliderMini({
     parentSelector: '.modules__content-slider', 
-    nextSlideSelector: ['.slick-next'],
+    nextSlideSelector: ['.slick-next', '.next'],
     prevSlideSelector: '.slick-prev',
     stepSlide: 2,
     activeSlideClass: 'card-active',
