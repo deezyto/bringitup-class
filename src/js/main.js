@@ -27,7 +27,8 @@ window.addEventListener('DOMContentLoaded', () => {
     prevSlideSelector: '.slick-prev',
     stepSlide: 2,
     activeSlideClass: 'card-active',
-    autoSlideFlipping: true
+    autoSlideFlipping: true,
+    mouseMoveSelector: ['.modules__content-slider', '.slick-next', '.slick-prev']
   });
 
   sliderModules.render();

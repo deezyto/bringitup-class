@@ -7,7 +7,6 @@ export default class SliderPages extends Slider {
 
   hide() {
     this.parentChildren.forEach(page => {
-      console.log(page);
       page.style.display = 'none';
     });
   }
@@ -25,7 +24,6 @@ export default class SliderPages extends Slider {
   trigger(selector) {
     this.parentChildren.forEach(page => {
       page.querySelector(selector).addEventListener('click', () => {
-        console.log('click');
         if (selector === this.nextSlideSelector[0] || selector === this.nextSlideSelector[1]) {
           this.slideIndex++;
         } else if (selector === this.prevSlideSelector) {
@@ -42,6 +40,7 @@ export default class SliderPages extends Slider {
   }
 
   init() {
+    
     this.hide();
     this.show(0);
     this.trigger(this.nextSlideSelector[0]);

@@ -2,9 +2,8 @@
 import Slider from "./slider";
 
 export default class SliderMini extends Slider {
-  constructor (all, flippingInterval) {
-    super(all, flippingInterval);
-    this.flippingInterval = null;
+  constructor (all) {
+    super(all);
   }
 
   hide() {
@@ -28,7 +27,7 @@ export default class SliderMini extends Slider {
       for (let i = 0; i < this.stepSlide; i++) {
         this.parentSelector.insertBefore(this.parentSelector.children[this.slides - 1 - lastSlides], this.parentSelector.children[0]);
       } 
-      //selector === this.nextSlideSelector[0] || selector === this.nextSlideSelector[1]
+
     } else {
       for (let i = 0; i < this.stepSlide; i++) {
         this.parentSelector.insertBefore(this.parentSelector.children[0], this.parentSelector.children[this.slides - lastSlides]);
@@ -45,31 +44,37 @@ export default class SliderMini extends Slider {
     }, 5000);
   }
 
-  trigger(selector) {
-    ['click', 'mousemove', 'mouseleave'].forEach(event => {
-      document.querySelector(selector).addEventListener(event, (e) => {
-        if (e.type === 'click') {
-          this.prevNextSlide(selector);
-          this.hide();
-          this.show();
-        } else if (e.type === 'mousemove') {
-          clearInterval(this.flippingInterval);
-        } else if (e.type === 'mouseleave') {
-          this.autoSlide(selector);
-        }
-        
+  mouseMove(selector) {
+    ['mousemove', 'mouseleave'].forEach(event => {
+      selector.forEach(elem => {
+        document.querySelector(elem).addEventListener(event, (e) => {
+          if (e.type === 'mousemove') {
+            clearInterval(this.flippingInterval);
+          } else if (e.type === 'mouseleave') {
+            this.autoSlide(selector);
+          }
+        });
       });
     });
   }
 
+  trigger(selector) {
+    document.querySelector(selector).addEventListener('click', () => {
+      this.prevNextSlide(selector);
+      this.hide();
+      this.show();
+    });
+  }
+
   render() {
+
     this.hide();
     this.show();
     this.trigger(this.nextSlideSelector[0]);
     this.trigger(this.prevSlideSelector);
     if (this.autoSlideFlipping) {
       this.autoSlide(this.nextSlideSelector[0]);
-      this.trigger('.modules__content-slider');
+      this.mouseMove(this.mouseMoveSelector);
     }
   }
 

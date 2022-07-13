@@ -17,12 +17,15 @@ export default class Slider {
     this.nextSlideSelector = nextSlideSelector;
     this.firstSlideSelector = firstSlideSelector;
     this.slideIndex = 0;
+    this.pageIndex = 0;
     this.slides = this.parentSelector.children.length;
     this.titleSlideSelector = titleSlideSelector;
     this.arrowSlideSelector = arrowSlideSelector;
     this.activeSlideClass = activeSlideClass;
     this.stepSlide = stepSlide;
     this.autoSlideFlipping = autoSlideFlipping;
+    this.flippingInterval = null;
     this.mouseMoveSelector = mouseMoveSelector;
   }
+
 }
