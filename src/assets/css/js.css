@@ -1,0 +1,12 @@
+.showup__content-slider, .modules__content-slider, .feed__slider {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    overflow: hidden;
+}
+
+.showup__content-slider .card-active .card__controls, 
+.showup__content-slider .card-active .card__controls-arrow,
+.showup__content-slider .card-active .card__title {
+    opacity: 1;
+}
