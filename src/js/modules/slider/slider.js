@@ -1,5 +1,16 @@
 export default class Slider {
-  constructor ({parentSelector = null, prevSlideSelector = null, nextSlideSelector = null, firstSlideSelector = null} = {}) {
+  constructor ({
+    parentSelector = null, 
+    prevSlideSelector = null, 
+    nextSlideSelector = null, 
+    firstSlideSelector = null,
+    titleSlideSelector = null,
+    arrowSlideSelector = null,
+    activeSlideClass = null,
+    stepSlide = 1,
+    autoSlideFlipping = false,
+    mouseMoveSelector = null
+    } = {}) {
     this.parentSelector = document.querySelector(parentSelector);
     this.parentChildren = Array.from(this.parentSelector.children);
     this.prevSlideSelector = prevSlideSelector;
@@ -7,5 +18,11 @@ export default class Slider {
     this.firstSlideSelector = firstSlideSelector;
     this.slideIndex = 0;
     this.slides = this.parentSelector.children.length;
+    this.titleSlideSelector = titleSlideSelector;
+    this.arrowSlideSelector = arrowSlideSelector;
+    this.activeSlideClass = activeSlideClass;
+    this.stepSlide = stepSlide;
+    this.autoSlideFlipping = autoSlideFlipping;
+    this.mouseMoveSelector = mouseMoveSelector;
   }
 }

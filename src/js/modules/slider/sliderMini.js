@@ -2,57 +2,75 @@
 import Slider from "./slider";
 
 export default class SliderMini extends Slider {
-  constructor (all) {
-    super(all);
+  constructor (all, flippingInterval) {
+    super(all, flippingInterval);
+    this.flippingInterval = null;
   }
 
-  next() {
-    console.log(this.slideIndex)
-    if (this.slideIndex === -1) {
-      this.slideIndex = this.parentChildren.length - 1;
+  hide() {
+    this.parentChildren.forEach(page => {
+      page.classList.remove(this.activeSlideClass);
+    });
+  }
+
+  show() {
+    this.parentSelector.children[0].classList.add(this.activeSlideClass);
+  }
+
+  prevNextSlide(selector) {
+    let lastSlides = 0;
+
+    if (this.parentSelector.children[this.slides - 1].tagName === 'BUTTON' && this.parentSelector.children[this.slides - 2].tagName === 'BUTTON') {
+      lastSlides = 2;
     }
 
-    //this.parentSelector.children[this.slideIndex].style.display = 'block';
-    this.parentSelector.appendChild(this.parentSelector.children[this.slideIndex]);
+    if (selector === this.prevSlideSelector) {
+      for (let i = 0; i < this.stepSlide; i++) {
+        this.parentSelector.insertBefore(this.parentSelector.children[this.slides - 1 - lastSlides], this.parentSelector.children[0]);
+      } 
+      //selector === this.nextSlideSelector[0] || selector === this.nextSlideSelector[1]
+    } else {
+      for (let i = 0; i < this.stepSlide; i++) {
+        this.parentSelector.insertBefore(this.parentSelector.children[0], this.parentSelector.children[this.slides - lastSlides]);
+      }
+    }
+
   }
 
-  prev() {
-
+  autoSlide(selector) {
+    this.flippingInterval = setInterval(() => {
+      this.prevNextSlide(selector);
+      this.hide();
+      this.show();
+    }, 5000);
   }
-
-  
 
   trigger(selector) {
-      
-      document.querySelector(selector).addEventListener('click', () => {
-        console.log(this.slides, 'this.slides', this.slides + 1)
-        console.log(this.parentSelector.children[0]);
-        if (selector === this.nextSlideSelector[0] || selector === this.nextSlideSelector[1]) {
-          this.slideIndex++;
-          
-          
-        } else if (selector === this.prevSlideSelector) {
-          //this.slideIndex--;
-          //console.log(this.parentSelector.children[this.slideIndex + 1], 'this.parentChildren[this.slideIndex')
-          this.parentSelector.insertBefore(this.parentSelector.children[this.slides - 1], this.parentSelector.children[this.slideIndex]);
+    ['click', 'mousemove', 'mouseleave'].forEach(event => {
+      document.querySelector(selector).addEventListener(event, (e) => {
+        if (e.type === 'click') {
+          this.prevNextSlide(selector);
+          this.hide();
+          this.show();
+        } else if (e.type === 'mousemove') {
+          clearInterval(this.flippingInterval);
+        } else if (e.type === 'mouseleave') {
+          this.autoSlide(selector);
         }
-       
         
       });
-
+    });
   }
 
-
   render() {
-    this.parentSelector.style.cssText = `
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    overflow: hidden;
-    `;
-    this.trigger(this.nextSlideSelector);
+    this.hide();
+    this.show();
+    this.trigger(this.nextSlideSelector[0]);
     this.trigger(this.prevSlideSelector);
-
+    if (this.autoSlideFlipping) {
+      this.autoSlide(this.nextSlideSelector[0]);
+      this.trigger('.modules__content-slider');
+    }
   }
 
 }

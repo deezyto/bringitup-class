@@ -11,11 +11,34 @@ window.addEventListener('DOMContentLoaded', () => {
 
   sliderPage.init();
 
-  const sliderMini = new SliderMini({
+  const sliderShowup = new SliderMini({
     parentSelector: '.showup__content-slider', 
     nextSlideSelector: ['.showup__next'],
-    prevSlideSelector: '.showup__prev'
+    prevSlideSelector: '.showup__prev',
+    stepSlide: 2,
+    activeSlideClass: 'card-active'
   });
 
-  sliderMini.render();
+  sliderShowup.render();
+
+  const sliderModules = new SliderMini({
+    parentSelector: '.modules__content-slider', 
+    nextSlideSelector: ['.slick-next'],
+    prevSlideSelector: '.slick-prev',
+    stepSlide: 2,
+    activeSlideClass: 'card-active',
+    autoSlideFlipping: true
+  });
+
+  sliderModules.render();
+
+  const feedSlider = new SliderMini({
+    parentSelector: '.feed__slider', 
+    nextSlideSelector: ['.feed__slider .slick-next'],
+    prevSlideSelector: '.feed__slider .slick-prev',
+    stepSlide: 1,
+    activeSlideClass: 'feed__item-active'
+  });
+
+  feedSlider.render();
 });
