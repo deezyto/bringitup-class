@@ -7,7 +7,8 @@ export default class Slider {
     activeSlideClass = null,
     stepSlide = 1,
     autoSlideFlipping = false,
-    mouseMoveSelector = null
+    mouseMoveSelector = null,
+    startAutoSlideFlippingOnTheSliderPage = false
     } = {}) {
     this.parentSelector = document.querySelector(parentSelector);
     this.parentChildren = Array.from(this.parentSelector.children);
@@ -21,6 +22,14 @@ export default class Slider {
     this.autoSlideFlipping = autoSlideFlipping;
     this.flippingInterval = null;
     this.mouseMoveSelector = mouseMoveSelector;
+    this.startAutoSlideFlippingOnTheSliderPage = startAutoSlideFlippingOnTheSliderPage;
   }
 
+  get pageNumber() {
+    return this.slideIndex;
+  }
+
+  set pageNumber(n) {
+    this.slideIndex = n;
+  }
 }

@@ -32,9 +32,11 @@ export default class SliderPages extends Slider {
         else {
           this.slideIndex = 0;
         }
-
+        
+        Slider.pageNumber = this.slideIndex;
         this.hide();
         this.show();
+
       });
     });
   }

@@ -4,6 +4,8 @@ import Slider from "./slider";
 export default class SliderMini extends Slider {
   constructor (all) {
     super(all);
+    this.numberForReturnOnFirstSlide = 0;
+    this.lastSlides = 0;
   }
 
   hide() {
@@ -17,57 +19,72 @@ export default class SliderMini extends Slider {
   }
 
   prevNextSlide(selector) {
-    let lastSlides = 0;
 
     if (this.parentSelector.children[this.slides - 1].tagName === 'BUTTON' && this.parentSelector.children[this.slides - 2].tagName === 'BUTTON') {
-      lastSlides = 2;
+      this.lastSlides = 2;
     }
 
     if (selector === this.prevSlideSelector) {
       for (let i = 0; i < this.stepSlide; i++) {
-        this.parentSelector.insertBefore(this.parentSelector.children[this.slides - 1 - lastSlides], this.parentSelector.children[0]);
-      } 
+        this.parentSelector.insertBefore(this.parentSelector.children[this.slides - 1 - this.lastSlides], this.parentSelector.children[0]);
+        this.numberForReturnOnFirstSlide--;
+      }
 
     } else {
       for (let i = 0; i < this.stepSlide; i++) {
-        this.parentSelector.insertBefore(this.parentSelector.children[0], this.parentSelector.children[this.slides - lastSlides]);
+        this.parentSelector.insertBefore(this.parentSelector.children[0], this.parentSelector.children[this.slides - this.lastSlides]);
+        this.numberForReturnOnFirstSlide++;
       }
+
     }
+
+    if (this.numberForReturnOnFirstSlide > this.slides - 2) {
+      this.numberForReturnOnFirstSlide = 0;
+    } else if (this.numberForReturnOnFirstSlide < 0) {
+      this.numberForReturnOnFirstSlide = this.slides - 2;
+    }
+
   }
 
-  autoSlide(selector) {
-    let number = 0;
-    document.querySelectorAll(this.nextSlideSelector[1]).forEach(elem => {
-      elem.addEventListener('click', () => {
-        if (document.querySelector('.modules').style.display === 'block') {
-          this.flippingInterval = setInterval(() => {
-            this.prevNextSlide(selector);
+  setFlippingInterval(selector) {
+    this.flippingInterval = setInterval(() => {
+      this.prevNextSlide(selector);
+      this.hide();
+      this.show();
+    }, 5000);
+  }
+
+  startAutoSlideFlipping(selector) {
+    if (this.startAutoSlideFlippingOnTheSliderPage) {
+      document.querySelectorAll(this.nextSlideSelector[1]).forEach(elem => {
+        elem.addEventListener('click', () => {
+          if (Slider.pageNumber === 2) {
+            this.setFlippingInterval(selector);
+          } else {
+            clearInterval(this.flippingInterval);
+            for (let i = 0; i < this.numberForReturnOnFirstSlide; i++) {
+              this.parentSelector.insertBefore(this.parentSelector.children[this.slides - 1], this.parentSelector.children[0]);
+            }
             this.hide();
             this.show();
-            number += this.stepSlide;
-          }, 5000);
-
-        } else if (document.querySelector('.modules').style.display === 'none') {
-          clearInterval(this.flippingInterval);
-          for (let i = 0; i < number; i++) {
-            this.parentSelector.insertBefore(this.parentSelector.children[this.slides - 1], this.parentSelector.children[0]);
+            this.numberForReturnOnFirstSlide = 0;
           }
-          this.hide();
-          this.show();
-          number = 0;
-        }
+        });
       });
-    });
+    } else {
+      this.setFlippingInterval(selector);
+    }
+    
   }
 
-  mouseMove(selector) {
-    ['mousemove', 'mouseleave'].forEach(event => {
+  pauseAutoSlideFlippingIfMouseOver(selector) {
+    ['mouseover', 'mouseleave'].forEach(event => {
       selector.forEach(elem => {
         document.querySelector(elem).addEventListener(event, (e) => {
-          if (e.type === 'mousemove') {
+          if (e.type === 'mouseover') {
             clearInterval(this.flippingInterval);
           } else if (e.type === 'mouseleave') {
-            this.autoSlide(selector);
+            this.setFlippingInterval(selector);
           }
         });
       });
@@ -83,14 +100,14 @@ export default class SliderMini extends Slider {
   }
 
   render() {
-
+    
     this.hide();
     this.show();
     this.trigger(this.nextSlideSelector[0]);
     this.trigger(this.prevSlideSelector);
     if (this.autoSlideFlipping) {
-      this.autoSlide(this.nextSlideSelector[0]);
-      this.mouseMove(this.mouseMoveSelector);
+      this.startAutoSlideFlipping(this.nextSlideSelector[0]);
+      this.pauseAutoSlideFlippingIfMouseOver(this.mouseMoveSelector);
     }
     
   }
