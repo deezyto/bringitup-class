@@ -1,11 +1,13 @@
 
 import Slider from "./slider";
+import ShowUpContent from "../showUpContent";
 
 export default class SliderMini extends Slider {
   constructor (all) {
     super(all);
     this.numberForReturnOnFirstSlide = 0;
     this.lastSlides = 0;
+    this.showUpContent = 0;
   }
 
   hide() {
@@ -38,10 +40,10 @@ export default class SliderMini extends Slider {
 
     }
 
-    if (this.numberForReturnOnFirstSlide > this.slides - 2) {
+    if (this.numberForReturnOnFirstSlide > this.slides - this.stepSlide) {
       this.numberForReturnOnFirstSlide = 0;
     } else if (this.numberForReturnOnFirstSlide < 0) {
-      this.numberForReturnOnFirstSlide = this.slides - 2;
+      this.numberForReturnOnFirstSlide = this.slides - this.stepSlide;
     }
 
   }
@@ -55,11 +57,17 @@ export default class SliderMini extends Slider {
   }
 
   startAutoSlideFlipping(selector) {
-    if (this.startAutoSlideFlippingOnTheSliderPage) {
+    if (this.autoSlideFlippingOption.turn) {
       document.querySelectorAll(this.nextSlideSelector[1]).forEach(elem => {
         elem.addEventListener('click', () => {
-          if (Slider.pageNumber === 2) {
+          if (Slider.pageNumber === this.autoSlideFlippingOption.sliderPage) {
             this.setFlippingInterval(selector);
+            new ShowUpContent({
+              parentSelector: '.hanson',
+              slideIndex: Slider.pageNumber,
+              iterator: this.showUpContent
+            }).render();
+            this.showUpContent++;
           } else {
             clearInterval(this.flippingInterval);
             for (let i = 0; i < this.numberForReturnOnFirstSlide; i++) {

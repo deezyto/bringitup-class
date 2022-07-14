@@ -1,6 +1,5 @@
 import SliderMini from "./modules/slider/sliderMini";
 import SliderPages from "./modules/slider/sliderPage";
-import ShowUpContent from "./modules/showUpContent";
 
 window.addEventListener('DOMContentLoaded', () => {
   const sliderPage = new SliderPages({
@@ -30,7 +29,7 @@ window.addEventListener('DOMContentLoaded', () => {
     activeSlideClass: 'card-active',
     autoSlideFlipping: true,
     mouseMoveSelector: ['.modules__content-slider', '.slick-next', '.slick-prev'],
-    startAutoSlideFlippingOnTheSliderPage: true
+    autoSlideFlippingOption: {turn: true, sliderPage: 2}
   });
 
   sliderModules.render();
@@ -44,8 +43,4 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   feedSlider.render();
-
-  new ShowUpContent({
-    parentSelector: '.hanson'
-  }).render();
 });
