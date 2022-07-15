@@ -1,9 +1,10 @@
 
 export default class ShowUpContent {
-  constructor ({parentSelector = null, slideIndex = null, iterator = 0} = {}) {
-    this.slideIndex = slideIndex;
+  constructor ({parentSelector = null, currentPageNumber = null, typeAnimation = 'slideInUp', showOnPage = 0} = {}) {
+    this.currentPageNumber = currentPageNumber;
     this.parentSelector = document.querySelector(parentSelector);
-    this.iterator = iterator;
+    this.typeAnimation = typeAnimation;
+    this.showOnPage = showOnPage;
   }
 
   hideContent() {
@@ -16,23 +17,34 @@ export default class ShowUpContent {
 
   setAnimation() {
     this.parentSelector.classList.toggle('animated');
+    this.parentSelector.classList.toggle(this.typeAnimation);
+  }
+
+  removeAnimation() {
     this.parentSelector.classList.toggle('slideInUp');
   }
 
   showUp() {
-      setTimeout(() => {
-        this.setAnimation();
-        this.showContent();
-      }, 5000);
-      setTimeout(() => {
-        this.setAnimation();
-      }, 10000);
+    setTimeout(() => {
+      this.setAnimation();
+      this.showContent();
+    }, 4000);
+    setTimeout(() => {
+      this.removeAnimation();
+    }, 8000);
   }
 
   render() {
-    if (this.iterator === 0) {
-      this.hideContent();
-      this.showUp();
+    if (!this.parentSelector.classList.contains('animated')) {
+      if (this.showOnPage) {
+        if (this.currentPageNumber === this.showOnPage) {
+          this.hideContent();
+          this.showUp();
+        }
+      } else {
+        this.hideContent();
+        this.showUp();
+      }
     }
   }
 }

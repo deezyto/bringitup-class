@@ -7,7 +7,6 @@ export default class SliderMini extends Slider {
     super(all);
     this.numberForReturnOnFirstSlide = 0;
     this.lastSlides = 0;
-    this.showUpContent = 0;
   }
 
   hide() {
@@ -21,7 +20,6 @@ export default class SliderMini extends Slider {
   }
 
   prevNextSlide(selector) {
-
     if (this.parentSelector.children[this.slides - 1].tagName === 'BUTTON' && this.parentSelector.children[this.slides - 2].tagName === 'BUTTON') {
       this.lastSlides = 2;
     }
@@ -37,7 +35,6 @@ export default class SliderMini extends Slider {
         this.parentSelector.insertBefore(this.parentSelector.children[0], this.parentSelector.children[this.slides - this.lastSlides]);
         this.numberForReturnOnFirstSlide++;
       }
-
     }
 
     if (this.numberForReturnOnFirstSlide > this.slides - this.stepSlide) {
@@ -45,7 +42,6 @@ export default class SliderMini extends Slider {
     } else if (this.numberForReturnOnFirstSlide < 0) {
       this.numberForReturnOnFirstSlide = this.slides - this.stepSlide;
     }
-
   }
 
   setFlippingInterval(selector) {
@@ -56,33 +52,33 @@ export default class SliderMini extends Slider {
     }, 5000);
   }
 
-  startAutoSlideFlipping(selector) {
-    if (this.autoSlideFlippingOption.turn) {
-      document.querySelectorAll(this.nextSlideSelector[1]).forEach(elem => {
-        elem.addEventListener('click', () => {
+  returnSlideOnStandartPosition() {
+    for (let i = 0; i < this.numberForReturnOnFirstSlide; i++) {
+      this.parentSelector.insertBefore(this.parentSelector.children[this.slides - 1], this.parentSelector.children[0]);
+    }
+    this.numberForReturnOnFirstSlide = 0;
+    this.hide();
+    this.show();
+  }
+
+  bindToCurrentPage(selector) {
+    document.querySelectorAll(this.nextSlideSelector[1]).forEach(elem => {
+      elem.addEventListener('click', () => {
+        new ShowUpContent({
+          parentSelector: '.hanson',
+          currentPageNumber: Slider.pageNumber,
+          showOnPage: this.autoSlideFlippingOption.sliderPage
+        }).render();
+        if (this.autoSlideFlippingOption.turn) {
           if (Slider.pageNumber === this.autoSlideFlippingOption.sliderPage) {
             this.setFlippingInterval(selector);
-            new ShowUpContent({
-              parentSelector: '.hanson',
-              slideIndex: Slider.pageNumber,
-              iterator: this.showUpContent
-            }).render();
-            this.showUpContent++;
           } else {
             clearInterval(this.flippingInterval);
-            for (let i = 0; i < this.numberForReturnOnFirstSlide; i++) {
-              this.parentSelector.insertBefore(this.parentSelector.children[this.slides - 1], this.parentSelector.children[0]);
-            }
-            this.hide();
-            this.show();
-            this.numberForReturnOnFirstSlide = 0;
+            this.returnSlideOnStandartPosition();
           }
-        });
+        }
       });
-    } else {
-      this.setFlippingInterval(selector);
-    }
-    
+    });
   }
 
   pauseAutoSlideFlippingIfMouseOver(selector) {
@@ -108,16 +104,16 @@ export default class SliderMini extends Slider {
   }
 
   render() {
-    
     this.hide();
     this.show();
     this.trigger(this.nextSlideSelector[0]);
     this.trigger(this.prevSlideSelector);
-    if (this.autoSlideFlipping) {
-      this.startAutoSlideFlipping(this.nextSlideSelector[0]);
-      this.pauseAutoSlideFlippingIfMouseOver(this.mouseMoveSelector);
-    }
-    
+    try {
+      this.bindToCurrentPage(this.nextSlideSelector[0]);
+      if (this.autoSlideFlipping) {
+        this.setFlippingInterval(this.nextSlideSelector[0]);
+        this.pauseAutoSlideFlippingIfMouseOver();
+      }
+    } catch {}
   }
-
 }
