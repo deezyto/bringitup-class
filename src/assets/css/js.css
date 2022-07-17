@@ -10,3 +10,21 @@
 .showup__content-slider .card-active .card__title {
     opacity: 1;
 }
+
+.module__info-show .show {
+    font-size: 14px;
+}
+
+.msg {
+    overflow: hidden;
+    height: 0;
+    display: block;
+}
+
+.show {
+    /* display: block; */
+    /* overflow: hidden; */
+    visibility: visible;
+    opacity: 1;
+    transition: .5s all;
+}

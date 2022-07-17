@@ -1,5 +1,5 @@
 import Slider from "./slider";
-
+import HideShowContent from "../hideShowContent";
 export default class SliderPages extends Slider {
   constructor (all) {
     super(all);
@@ -42,6 +42,11 @@ export default class SliderPages extends Slider {
   }
 
   init() {
+    new HideShowContent({
+      parentSelector: '.module__info-show',
+      buttonSelector: '.plus',
+      contentSelector: '.msg'
+    }).render();
     
     this.hide();
     this.show(0);
