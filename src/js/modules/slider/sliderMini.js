@@ -112,7 +112,7 @@ export default class SliderMini extends Slider {
       this.bindToCurrentPage(this.nextSlideSelector[0]);
       if (this.autoSlideFlipping) {
         this.setFlippingInterval(this.nextSlideSelector[0]);
-        this.pauseAutoSlideFlippingIfMouseOver();
+        this.pauseAutoSlideFlippingIfMouseOver(this.mouseMoveSelector);
       }
     } catch {}
   }
