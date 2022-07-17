@@ -1,28 +1,37 @@
 
 export default class Animation {
-  constructor ({selectorForAnimation = null, heightShowContent = 50} = {}) {
+  constructor ({selectorForAnimation = null, heightShowContent = 50, speed = 1} = {}) {
     this.selectorForAnimation = selectorForAnimation;
-    this.showHide = 'hide';
+    this.showHide = 'show';
     this.heightShowContent = heightShowContent;
+    this.speed = speed;
     this.animation = 0;
   }
 
   animationShowHide() {
     if (this.animation <= this.heightShowContent && this.showHide === 'show') {
-      requestAnimationFrame(this.animationShowHide.bind(this));
       this.selectorForAnimation.style.height = this.animation + 'px';
-      this.animation++;
+      this.animation += this.speed;
+      this.animate = requestAnimationFrame(this.animationShowHide.bind(this));
+      if (this.animation === this.heightShowContent) {
+        cancelAnimationFrame(this.animate);
+      }
     }
-
+    
     if (!this.animation && this.showHide === 'hide') {
       this.animation = this.heightShowContent;
     }
 
-    if (this.animation > 1 && this.showHide === 'hide') {
-      requestAnimationFrame(this.animationShowHide.bind(this));
+    if (this.animation > 0 && this.showHide === 'hide') {
       this.selectorForAnimation.style.height = this.animation + 'px';
-      this.animation--;
+      this.animation -= this.speed;
+      this.animate = requestAnimationFrame(this.animationShowHide.bind(this));
+      if (this.animation === 0) {
+        this.selectorForAnimation.style.height = '1px';
+        cancelAnimationFrame(this.animate);
+      }
     }
+
   }
 
   style() {

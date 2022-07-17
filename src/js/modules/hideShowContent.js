@@ -11,7 +11,8 @@ export default class HideShowContent {
       button.addEventListener('click', () => {
         new Animation({
           selectorForAnimation: this.contentSelector[i],
-          heightShowContent: '80'
+          heightShowContent: '80',
+          speed: 2
         }).render();
       });
     });
