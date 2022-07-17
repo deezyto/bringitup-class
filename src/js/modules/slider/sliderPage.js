@@ -43,7 +43,6 @@ export default class SliderPages extends Slider {
 
   init() {
     new HideShowContent({
-      parentSelector: '.module__info-show',
       buttonSelector: '.plus',
       contentSelector: '.msg'
     }).render();

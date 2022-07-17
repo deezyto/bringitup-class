@@ -15,16 +15,14 @@
     font-size: 14px;
 }
 
-.msg {
+/* .msg {
     overflow: hidden;
     height: 0;
     display: block;
-}
+} */
 
-.show {
-    /* display: block; */
-    /* overflow: hidden; */
+/* .show {
     visibility: visible;
     opacity: 1;
     transition: .5s all;
-}
+} */
