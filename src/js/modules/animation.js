@@ -1,8 +1,8 @@
 export default class Animation {
-  constructor ({selectorForAnimation = null, buttonSelector = null, showHide = 'hide', heightShowContent = 50} = {}) {
+  constructor ({selectorForAnimation = null, buttonSelector = null, heightShowContent = 50} = {}) {
     this.selectorForAnimation = selectorForAnimation;
     this.buttonSelector = buttonSelector;
-    this.showHide = showHide;
+    this.showHide = 'hide';
     this.heightShowContent = heightShowContent;
     this.animation = 0;
   }
@@ -27,10 +27,18 @@ export default class Animation {
   }
 
   style() {
-
+    if (!this.selectorForAnimation.closest('.show')) {
+      this.showHide = 'show';
+      this.selectorForAnimation.classList.toggle('show');
+    } else {
+      this.showHide = 'hide';
+      this.selectorForAnimation.classList.toggle('show');
+    }
   }
 
-  render(animation) {
+  render() {
+    this.style();
+    this.animationShowHide();
 
   }
 

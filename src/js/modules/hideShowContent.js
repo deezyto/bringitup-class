@@ -16,29 +16,11 @@ export default class HideShowContent {
     this.buttonSelector.forEach((button, i) => {
       button.addEventListener('click', () => {
         console.log('click');
-        if (!this.contentSelector[i].closest('.show')) {
+        //if (!this.contentSelector[i].closest('.show')) {
           new Animation({
-            selectorForAnimation: this.contentSelector[0],
-            buttonSelector: button,
-            showHide: 'show',
+            selectorForAnimation: this.contentSelector[i],
             heightShowContent: '80'
-          }).animationShowHide();
-          //this.contentSelector[i].classList.toggle('show');
-        } else {
-          //this.contentSelector[i].classList.toggle('show');
-          new Animation({
-            selectorForAnimation: this.contentSelector[0],
-            buttonSelector: button,
-            showHide: 'hide',
-            heightShowContent: '80'
-          }).animationShowHide();
-          
-        }
-        
-       
-        /* this.contentSelector[i].classList.toggle('animated');
-        this.contentSelector[i].classList.toggle('fadeInRight'); */
-        
+          }).render();
       });
     });
   }
