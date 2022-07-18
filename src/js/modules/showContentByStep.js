@@ -1,5 +1,5 @@
 
-export default class showContentByStep {
+export default class ShowContentByStep {
   constructor ({parentSelector = null, buttonSelector = null, typeAnimation = 'fadeIn'} = {}) {
     this.parentSelector = parentSelector;
     this.buttonSelector = buttonSelector;
