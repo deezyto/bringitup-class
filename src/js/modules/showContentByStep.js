@@ -1,10 +1,11 @@
 
 export default class ShowContentByStep {
-  constructor ({parentSelector = null, buttonSelector = null, typeAnimation = 'fadeIn'} = {}) {
+  constructor ({parentSelector = null, buttonSelector = null, typeAnimation = 'fadeIn', removeAnimation = false} = {}) {
     this.parentSelector = parentSelector;
     this.buttonSelector = buttonSelector;
     this.typeAnimation = typeAnimation;
     this.arrayShowElements = [];
+    this.removeAnimation = removeAnimation;
   }
 
   childrenLength(indexSelector) {
@@ -30,6 +31,13 @@ export default class ShowContentByStep {
         elem.classList.add('animated');
         elem.classList.add(this.typeAnimation);
         elem.style.display = 'flex';
+        
+        if (this.removeAnimation) {
+          setTimeout(() => {
+            elem.classList.remove(this.typeAnimation);
+          },1000);
+        }
+        
       }
     });
   }
