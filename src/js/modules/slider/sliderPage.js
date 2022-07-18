@@ -1,5 +1,4 @@
 import Slider from "./slider";
-import HideShowContent from "../hideShowContent";
 export default class SliderPages extends Slider {
   constructor (all) {
     super(all);
@@ -42,11 +41,6 @@ export default class SliderPages extends Slider {
   }
 
   init() {
-    new HideShowContent({
-      buttonSelector: '.plus',
-      contentSelector: '.msg'
-    }).render();
-    
     this.hide();
     this.show(0);
     this.trigger(this.nextSlideSelector[0]);
@@ -57,9 +51,7 @@ export default class SliderPages extends Slider {
     
     try {
       this.trigger(this.firstSlideSelector);
-    } catch {
-      
-    }
+    } catch {}
     
   }
 }

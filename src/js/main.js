@@ -1,17 +1,21 @@
 import SliderMini from "./modules/slider/sliderMini";
 import SliderPages from "./modules/slider/sliderPage";
+import HideShowContent from "./modules/hideShowContent";
 import ShowContentByStep from "./modules/showContentByStep";
 import GetHideLink from "./modules/getHideLink";
 
 window.addEventListener('DOMContentLoaded', () => {
-  const sliderPage = new SliderPages({
-    parentSelector: ['.page', '.moduleapp'], 
-    nextSlideSelector: ['.next', '.nextmodule'],
-    prevSlideSelector: '.prevmodule',
-    firstSlideSelector: '.sidecontrol a'
-  });
 
-  sliderPage.init();
+  try {
+    const sliderPage = new SliderPages({
+      parentSelector: ['.page', '.moduleapp'], 
+      nextSlideSelector: ['.next', '.nextmodule'],
+      prevSlideSelector: '.prevmodule',
+      firstSlideSelector: '.sidecontrol a'
+    });
+  
+    sliderPage.init();
+  } catch {}
 
   try {
     const sliderShowup = new SliderMini({
@@ -50,6 +54,13 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   
     feedSlider.render();
+  } catch {}
+
+  try {
+    new HideShowContent({
+      buttonSelector: '.plus',
+      contentSelector: '.msg'
+    }).render();
   } catch {}
 
   try {

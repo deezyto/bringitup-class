@@ -9,11 +9,13 @@ export default class HideShowContent {
   trigger() {
     this.buttonSelector.forEach((button, i) => {
       button.addEventListener('click', () => {
-        new Animation({
-          selectorForAnimation: this.contentSelector[i],
-          heightShowContent: '80',
-          speed: 2
-        }).render();
+        try {
+          new Animation({
+            selectorForAnimation: this.contentSelector[i],
+            heightShowContent: '80',
+            speed: 2
+          }).render();
+        } catch {}
       });
     });
   }
