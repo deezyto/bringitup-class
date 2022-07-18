@@ -4,22 +4,20 @@ export default class showContentByStep {
     this.parentSelector = parentSelector;
     this.buttonSelector = buttonSelector;
     this.typeAnimation = typeAnimation;
-    this.array = [];
-    this.firstSpace = 1;
-    this.lastSpace = 1;
+    this.arrayShowElements = [];
   }
 
   childrenLength(indexSelector) {
     return document.querySelector(this.parentSelector[indexSelector]).children.length;
   }
 
-  hideContent(indexSelector = 1) {
+  hideContent(indexLastElement = 1) {
     this.parentSelector.forEach((selector, index) => {
-      this.array.push(0);
-      Array.from(document.querySelector(selector).children).forEach((elem, i) => {
-        if (i > 0 && i !== this.childrenLength(index) - 1 && indexSelector === 1) {
+      this.arrayShowElements.push(0);
+      Array.from(document.querySelector(selector).children).forEach((elem, item) => {
+        if (indexLastElement === 1 && item > 0 && item !== this.childrenLength(index) - 1) {
           elem.style.display = 'none';
-        } else if (i === indexSelector) {
+        } else if (item === indexLastElement) {
           elem.style.display = 'none';
         }
       });
@@ -39,11 +37,11 @@ export default class showContentByStep {
   showContentByStep() {
     this.parentSelector.forEach((selector, index) => {
       document.querySelector(selector).querySelector(this.buttonSelector).addEventListener('click', () => {
-        this.array[index] += 1;
-        this.showContent(index, this.array[index]);
-        if (this.array[index] === this.childrenLength(index) - 2) {
-          this.array[index] = 0;
-          document.querySelector(this.parentSelector[index]).children[4].style.display = 'none';
+        this.arrayShowElements[index] += 1;
+        this.showContent(index, this.arrayShowElements[index]);
+        if (this.arrayShowElements[index] === this.childrenLength(index) - 2) {
+          this.arrayShowElements[index] = 0;
+          document.querySelector(this.parentSelector[index]).children[this.childrenLength(index) - 1].style.display = 'none';
         }
       });
     });
