@@ -3,6 +3,7 @@ import SliderPages from "./modules/slider/sliderPage";
 import HideShowContent from "./modules/hideShowContent";
 import ShowContentByStep from "./modules/showContentByStep";
 import GetHideLink from "./modules/getHideLink";
+import ShowVideoPlayer from "./modules/showVideoPlayer";
 
 window.addEventListener('DOMContentLoaded', () => {
 
@@ -76,6 +77,14 @@ window.addEventListener('DOMContentLoaded', () => {
     new GetHideLink({
       parentSelector: '.module__info-book',
       buttonSelector: '.download'
+    }).render();
+  } catch {}
+
+  try {
+    new ShowVideoPlayer({
+      modalSelector: '.overlay',
+      playButtonSelector: '.play__circle',
+      closeModalSelector: '.close'
     }).render();
   } catch {}
   
