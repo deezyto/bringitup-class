@@ -1,5 +1,6 @@
 import SliderMini from "./modules/slider/sliderMini";
 import SliderPages from "./modules/slider/sliderPage";
+import showContentByStep from "./modules/showContentByStep";
 
 window.addEventListener('DOMContentLoaded', () => {
   const sliderPage = new SliderPages({
@@ -43,4 +44,9 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   feedSlider.render();
+
+  new showContentByStep({
+    parentSelector: ['.officernew', '.officerold'],
+    buttonSelector: '.plus'
+  }).render();
 });
