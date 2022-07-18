@@ -7,6 +7,7 @@ export default class ShowVideoPlayer {
     this.playButtonSelector = playButtonSelector;
     this.closeModalSelector = closeModalSelector;
     this.player = 0;
+    this.currentVideo = 0;
   }
 
   showModal() {
@@ -16,8 +17,15 @@ export default class ShowVideoPlayer {
         let videoUrl = selector.parentNode.getAttribute('data-url');
         if (!this.player) {
           this.onYouTubeIframeAPIReady(videoUrl);
+          this.currentVideo = videoUrl;
         } else {
-          this.player.playVideo();
+          if (this.currentVideo === videoUrl) {
+            this.player.playVideo();
+          } else {
+            console.log(videoUrl);
+            this.currentVideo = videoUrl;
+            this.player.loadVideoById({videoId: videoUrl});
+          }
         }
       });
     });
