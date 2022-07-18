@@ -47,6 +47,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   new showContentByStep({
     parentSelector: ['.officernew', '.officerold'],
-    buttonSelector: '.plus'
+    buttonSelector: '.plus',
+    typeAnimation: 'fadeIn'
   }).render();
 });
