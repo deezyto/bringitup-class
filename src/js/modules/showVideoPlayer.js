@@ -7,26 +7,34 @@ export default class ShowVideoPlayer {
     this.playButtonSelector = playButtonSelector;
     this.closeModalSelector = closeModalSelector;
     this.player = 0;
-    this.currentVideo = 0;
+    this.currentVideoId = 0;
+    this.currentVideoIndex = 0;
+    this.onPlayerStateChange = this.onPlayerStateChange.bind(this);
   }
 
   showModal() {
-    document.querySelectorAll(this.playButtonSelector).forEach(selector => {
+    document.querySelectorAll(this.playButtonSelector).forEach((selector, index) => {
+      this.blockVideos(selector, index);
       selector.addEventListener('click', () => {
-        this.modalSelector.style.display = 'flex';
-        let videoUrl = selector.parentNode.getAttribute('data-url');
-        if (!this.player) {
-          this.onYouTubeIframeAPIReady(videoUrl);
-          this.currentVideo = videoUrl;
-        } else {
-          if (this.currentVideo === videoUrl) {
-            this.player.playVideo();
+        let videoBlock = selector.getAttribute('data-block');
+        if (!videoBlock || videoBlock !== 'true') {
+          this.modalSelector.style.display = 'flex';
+          let videoUrl = selector.parentNode.getAttribute('data-url');
+          if (!this.player) {
+            this.onYouTubeIframeAPIReady(videoUrl);
+            this.currentVideoId = videoUrl;
+            this.currentVideoIndex = index;
           } else {
-            console.log(videoUrl);
-            this.currentVideo = videoUrl;
-            this.player.loadVideoById({videoId: videoUrl});
+            if (this.currentVideoId === videoUrl) {
+              this.player.playVideo();
+            } else {
+              this.currentVideoId = videoUrl;
+              this.currentVideoIndex = index;
+              this.player.loadVideoById({videoId: videoUrl});
+            }
           }
         }
+
       });
     });
   }
@@ -47,7 +55,7 @@ export default class ShowVideoPlayer {
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
   }
 
-  onYouTubeIframeAPIReady(url) {
+  onYouTubeIframeAPIReady(url = 0) {
     this.player = new YT.Player('frame', {
       width: '100%',
       height: '100%',
@@ -58,9 +66,27 @@ export default class ShowVideoPlayer {
     });
   }
 
+  blockVideos(selector, index) {
+    if (index % 2 !== 0) {
+      selector.setAttribute('data-block', 'true');
+    }
+  }
+
   onPlayerStateChange(event) {
-    console.log(event);
-    
+    if (event.data === 0) {
+      const svgCopy = document.querySelector(`${this.playButtonSelector} svg`).cloneNode(true);
+      const unlockVideo = document.querySelectorAll(this.playButtonSelector);
+
+      document.querySelectorAll(`${this.playButtonSelector} svg`)[this.currentVideoIndex + 1].remove();
+      unlockVideo[this.currentVideoIndex + 1].appendChild(svgCopy);
+      unlockVideo[this.currentVideoIndex + 1].parentElement.lastElementChild.remove();
+      unlockVideo[this.currentVideoIndex + 1].parentElement.appendChild(unlockVideo[0].parentElement.lastElementChild.cloneNode(true));
+      unlockVideo[this.currentVideoIndex + 1].parentElement.parentElement.style.cssText = `
+      opacity: 1;
+      filter: none;
+      `;
+      document.querySelectorAll(this.playButtonSelector)[this.currentVideoIndex + 1].setAttribute('data-block', 'false');
+    }
   }
 
   render() {
