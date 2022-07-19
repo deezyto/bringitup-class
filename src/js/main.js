@@ -84,7 +84,8 @@ window.addEventListener('DOMContentLoaded', () => {
     new ShowVideoPlayer({
       modalSelector: '.overlay',
       playButtonSelector: '.play__circle',
-      closeModalSelector: '.close'
+      closeModalSelector: '.close',
+      videoAttribute: 'data-url'
     }).render();
   } catch {}
   
