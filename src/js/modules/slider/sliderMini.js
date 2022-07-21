@@ -5,15 +5,12 @@ import ShowUpContent from "../showUpContent";
 export default class SliderMini extends Slider {
   constructor (all) {
     super(all);
-    this.numberForReturnOnFirstSlide = 0;
     this.lastSlides = 0;
     this.currentSlide = 0;
-    this.currentSlidePrev = 0;
-    this.notSlide1 = this.notSlide(this.stepSlide, this.slides);
-
+    this.arraySlideLessThanStep = this.slideLessThanStep(this.stepSlide, this.slides);
   }
 
-  notSlide(step, slides) {
+  slideLessThanStep(step, slides) {
     for (let i = slides; i > 0; i -= step) {
       if (i - step < 0) {
         return [step - i, i, step, slides - i];
@@ -37,71 +34,50 @@ export default class SliderMini extends Slider {
     }
 
     if (selector === this.prevSlideSelector) {
-      console.log(this.currentSlide, 'current before', this.notSlide1)
-
       for (let i = 0; i < this.stepSlide; i++) {
-
-        if (this.notSlide1) {
+        if (this.arraySlideLessThanStep) {
           if (this.currentSlide === 0) {
             this.currentSlide = this.slides;
-            this.stepSlide -= this.notSlide1[0];
-          } else if (this.currentSlide === this.notSlide1[3]) {
-            this.stepSlide = this.notSlide1[2];
+            this.stepSlide = this.arraySlideLessThanStep[1];
+          } else if (this.currentSlide === this.arraySlideLessThanStep[3]) {
+            this.stepSlide = this.arraySlideLessThanStep[2];
           }
-  
+          this.currentSlide--;
+        } else {
           this.currentSlide--;
         }
         
-        
-
         this.parentSelector.insertBefore(this.parentSelector.children[this.slides - 1 - this.lastSlides], this.parentSelector.children[0]);
-        this.numberForReturnOnFirstSlide--;
-
       }
 
     } else {
-      //let notSlide = this.notSlide(this.stepSlide, this.slides);
-      
       for (let i = 0; i < this.stepSlide; i++) {
-        
-        
-        //коли степ слайд більше ніж самих слайдів
-        //this.currentSlide === this.stepSlide * 2
-        //if (this.notSlide(this.stepSlide, this.slides)) {
-        
-        if (this.notSlide1) {
-          
-          if (this.currentSlide === this.notSlide1[3]) {
-            this.stepSlide -= this.notSlide1[0];
+        if (this.arraySlideLessThanStep) {
+          if (this.currentSlide === this.arraySlideLessThanStep[3]) {
+            this.stepSlide = this.arraySlideLessThanStep[1];
           } else if (this.currentSlide === this.slides) {
-              this.currentSlide = 0;
-              this.stepSlide = this.notSlide1[2];
+            this.currentSlide = 0;
+            this.stepSlide = this.arraySlideLessThanStep[2];
           } 
+          this.currentSlide++;
+        } else {
           this.currentSlide++;
         }
         
-        
-
         this.parentSelector.insertBefore(this.parentSelector.children[0], this.parentSelector.children[this.slides - this.lastSlides]);
-        this.numberForReturnOnFirstSlide++;
-        
-        //}
-
         
       }
-      
-
     }
-    console.log(this.currentSlide, 'current');
     
-
-    if (this.numberForReturnOnFirstSlide > this.slides - this.stepSlide) {
-      this.numberForReturnOnFirstSlide = 0;
-    } else if (this.numberForReturnOnFirstSlide < 0) {
-      this.numberForReturnOnFirstSlide = this.slides - this.stepSlide;
+    if (!this.arraySlideLessThanStep) {
+      if (this.currentSlide > this.slides - this.stepSlide) {
+        this.currentSlide = 0;
+      } else if (this.currentSlide < 0) {
+        this.currentSlide = this.slides - this.stepSlide;
+      }
     }
-
     
+    console.log(this.currentSlide, 'current', this.numberForReturnOnFirstSlide, 'numberForReturnOnFirstSlide');
   }
 
   setFlippingInterval(selector) {
@@ -113,10 +89,10 @@ export default class SliderMini extends Slider {
   }
 
   returnSlideOnStandartPosition() {
-    for (let i = 0; i < this.numberForReturnOnFirstSlide; i++) {
+    for (let i = 0; i < this.currentSlide; i++) {
       this.parentSelector.insertBefore(this.parentSelector.children[this.slides - 1], this.parentSelector.children[0]);
     }
-    this.numberForReturnOnFirstSlide = 0;
+    this.currentSlide = 0;
     this.hide();
     this.show();
   }
