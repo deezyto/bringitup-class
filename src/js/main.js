@@ -4,6 +4,7 @@ import HideShowContent from "./modules/hideShowContent";
 import ShowContentByStep from "./modules/showContentByStep";
 import GetHideLink from "./modules/getHideLink";
 import ShowVideoPlayer from "./modules/showVideoPlayer";
+import Form from "./modules/form";
 
 window.addEventListener('DOMContentLoaded', () => {
 
@@ -86,6 +87,12 @@ window.addEventListener('DOMContentLoaded', () => {
       playButtonSelector: '.play__circle',
       closeModalSelector: '.close',
       videoAttribute: 'data-url'
+    }).render();
+  } catch {}
+
+  try {
+    new Form({
+      
     }).render();
   } catch {}
   
