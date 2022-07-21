@@ -16,7 +16,7 @@ export default class SliderMini extends Slider {
   notSlide(step, slides) {
     for (let i = slides; i > 0; i -= step) {
       if (i - step < 0) {
-        return [step - i, i, slides - i];
+        return [step - i, i, step, slides - i];
       }
     }
   }
@@ -37,16 +37,16 @@ export default class SliderMini extends Slider {
     }
 
     if (selector === this.prevSlideSelector) {
-      console.log(this.currentSlide, 'current before')
+      console.log(this.currentSlide, 'current before', this.notSlide1)
 
       for (let i = 0; i < this.stepSlide; i++) {
 
         if (this.notSlide1) {
           if (this.currentSlide === 0) {
             this.currentSlide = this.slides;
-            this.stepSlide = 2;
-          } else if (this.currentSlide === 6) {
-            this.stepSlide = 3;
+            this.stepSlide -= this.notSlide1[0];
+          } else if (this.currentSlide === this.notSlide1[3]) {
+            this.stepSlide = this.notSlide1[2];
           }
   
           this.currentSlide--;
@@ -71,11 +71,11 @@ export default class SliderMini extends Slider {
         
         if (this.notSlide1) {
           
-          if (this.currentSlide === this.notSlide1[2]) {
-            this.stepSlide = 2;
-          } else if (this.currentSlide === 8) {
+          if (this.currentSlide === this.notSlide1[3]) {
+            this.stepSlide -= this.notSlide1[0];
+          } else if (this.currentSlide === this.slides) {
               this.currentSlide = 0;
-              this.stepSlide = 3;
+              this.stepSlide = this.notSlide1[2];
           } 
           this.currentSlide++;
         }
