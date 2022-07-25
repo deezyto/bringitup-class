@@ -17,9 +17,11 @@ export default class Form {
     };
     this.path = 'assets/question.php';
     this.removeMessage = null;
+    this.item = 0;
   }
 
   showMessage(form, message) {
+    this.item = 1;
     let style;
     let styleBlue = `
       color: white; border: 1px solid white; 
@@ -46,9 +48,9 @@ export default class Form {
     if (form.parentNode.querySelector('.message')) {
       form.parentNode.lastElementChild.textContent = message;
       clearTimeout(this.removeMessage);
-      this.removeMessage = setTimeout(() => {
-        form.parentNode.lastElementChild.remove();
-      }, 5000);
+        this.removeMessage = setTimeout(() => {
+          form.parentNode.lastElementChild.remove();
+        }, 5000);
     } else {
       const elem = document.createElement('div');
       elem.classList.add('message', 'animated', 'fadeIn');
@@ -62,6 +64,14 @@ export default class Form {
       }, 5000);
     }
 
+  }
+
+  removeMessageText(form) {
+    if (form.parentNode.querySelector('.message') && this.item === 1) {
+      clearTimeout(this.removeMessage);
+      form.parentNode.lastElementChild.remove();
+    }
+    this.item = 0;
   }
 
   mask(selector, form) {
@@ -83,15 +93,14 @@ export default class Form {
   
     function createMask(event){
       let self = this;
+
+      console.log(self.value, 'value');
   
       let matrix = '+1(___) ___-____';
-  
-      let i = 0;
-  
       let def = matrix.replace(/\D/g, '');
-  
       let val = self.value.replace(/\D/g, '');
-  
+      let i = 0;
+
       if (def.length >= val.length) {
         val = def;
       }
@@ -112,9 +121,10 @@ export default class Form {
             global.showMessage(form, global.message.phone.three);
             return '';
           } else {
+            //global.removeMessageText(form);
             return val.charAt(i++);
           }
-          
+
         } else if (i >= val.length) {
           return '';
         } else {
