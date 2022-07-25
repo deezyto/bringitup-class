@@ -1,3 +1,4 @@
+'use strict';
 import SliderMini from "./modules/slider/sliderMini";
 import SliderPages from "./modules/slider/sliderPage";
 import HideShowContent from "./modules/hideShowContent";

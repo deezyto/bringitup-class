@@ -1,7 +1,8 @@
 
 export default class Form {
-  constructor ({parentSelector = null} = {}) {
-    this.form = document.querySelectorAll('form');
+  constructor ({formIndex = 0, typeStyleMessage = 1} = {}) {
+    this.form = document.querySelectorAll('form')[formIndex];
+    this.typeStyleMessage = typeStyleMessage;
     this.message = {
       loading: 'Data is being sent...',
       success: 'Thank you, we will call you soon!',
@@ -14,32 +15,29 @@ export default class Form {
         three: `The last two digits cannot be 11. Please enter correct phone: +1(234) 375-250`
       }
     };
+    this.path = 'assets/question.php';
+    this.removeMessage = null;
   }
 
-  showMessage(typeStyle, form, message) {
-    const removeMessage = setTimeout(() => {
-      form.parentNode.lastElementChild.remove();
-    }, 5000);
-
-    console.log(typeStyle, form, message);
+  showMessage(form, message) {
     let style;
     let styleBlue = `
-    color: white; border: 1px solid white; 
-    border-radius: 5px; width: 335px; 
-    font-size: 15px;
-    padding: 10px;
-    margin-top: 34px;
-    box-shadow: 2px 0px 3px green;
+      color: white; border: 1px solid white; 
+      border-radius: 5px; width: 335px; 
+      font-size: 15px;
+      padding: 10px;
+      margin-top: 34px;
+      box-shadow: 2px 0px 3px green;
     `;
     let styleWhite = `
-    color: white; border: 1px solid white; 
-    border-radius: 5px; width: 335px; 
-    padding: 10px;
-    font-size: 15px;
-    margin-top: 34px;
-    box-shadow: 2px 0px 3px green;
+      color: white; border: 1px solid white; 
+      border-radius: 5px; width: 335px; 
+      padding: 10px;
+      font-size: 15px;
+      margin-top: 34px;
+      box-shadow: 2px 0px 3px green;
     `;
-    if (typeStyle === 1) {
+    if (this.typeStyleMessage === 1) {
       style = styleBlue;
     } else {
       style = styleWhite;
@@ -47,26 +45,28 @@ export default class Form {
 
     if (form.parentNode.querySelector('.message')) {
       form.parentNode.lastElementChild.textContent = message;
-      clearTimeout(removeMessage);
+      clearTimeout(this.removeMessage);
+      this.removeMessage = setTimeout(() => {
+        form.parentNode.lastElementChild.remove();
+      }, 5000);
     } else {
       const elem = document.createElement('div');
       elem.classList.add('message', 'animated', 'fadeIn');
       elem.style.cssText = style;
       elem.textContent = message;
       form.parentNode.appendChild(elem);
-      console.log(form.parentNode.firstElementChild, 'form.parentNode.firstChild');
-      clearTimeout(removeMessage);
-      setTimeout(() => {
+
+      clearTimeout(this.removeMessage);
+      this.removeMessage = setTimeout(() => {
         form.parentNode.lastElementChild.remove();
       }, 5000);
     }
-    console.log(form.parentNode.lastElementChild, 'form.parentNode.lastElementChild');
+
   }
 
   mask(selector, form) {
-    const showMessage = this.showMessage;
-    const message = this.message;
-
+    let global = this;
+    
     function setCursorPosition(pos, elem) {
       elem.focus();
   
@@ -81,7 +81,8 @@ export default class Form {
       }
     }
   
-    function createMask(event) {
+    function createMask(event){
+      let self = this;
   
       let matrix = '+1(___) ___-____';
   
@@ -89,26 +90,26 @@ export default class Form {
   
       let def = matrix.replace(/\D/g, '');
   
-      let val = this.value.replace(/\D/g, '');
+      let val = self.value.replace(/\D/g, '');
   
       if (def.length >= val.length) {
         val = def;
       }
       
-      this.value = matrix.replace(/./g, function(a) {
+      self.value = matrix.replace(/./g, function(a) {
   
         if (/[_\d]/.test(a) && i < val.length) {
           if (val.charAt(0) !== '1' && i === 0) {
             i++;
-            showMessage(1, form, message.phone.one);
+            global.showMessage(form, global.message.phone.one);
             return '1';
           } else if (val.charAt(1) === '1' && i === 1 || val.charAt(4) === '1' && i === 4) {
             i++;
-            showMessage(1, form, message.phone.two);
+            global.showMessage(form, global.message.phone.two);
             return '';
           } else if (val.charAt(2) === '1' && val.charAt(3) === '1' && i === 3 || val.charAt(5) === '1' && val.charAt(6) === '1' && i === 6) {
             i++;
-            showMessage(1, form, message.phone.three);
+            global.showMessage(form, global.message.phone.three);
             return '';
           } else {
             return val.charAt(i++);
@@ -123,11 +124,11 @@ export default class Form {
       });
   
       if (event.type === 'blur') {
-        if (this.value.length === 2) {
-          this.value = '';
+        if (self.value.length === 2) {
+          self.value = '';
         }
       } else {
-        setCursorPosition(this.value.length, this);
+        setCursorPosition(self.value.length, self);
       }
     }
   
@@ -144,35 +145,55 @@ export default class Form {
       input.addEventListener('input', (e) => {
         console.log('input');
         if (input.type === 'text' && input.name !== 'phone') {
-          const filterValue = input.value.replace(/[^a-z]/g, '');
+          const filterValue = input.value.replace(/[^a-zA-Z]/g, '');
           input.value = filterValue;
 
         } else if (input.type === 'email') {
-          const filterValue = input.value.replace(/[^a-z0-9.@]/g, '');
+          const filterValue = input.value.replace(/[^a-zA-Z0-9.@]/g, '');
           input.value = filterValue;
 
         } else if (input.name === 'phone') {
-          const phoneMask = '+1 ___ ___ ____';
-          let currentPhoneMask = '+1 ___ ___ ____';
-
-          let valueFilter = input.value.replace(/[^0-9]/g, '');
-          let mask = currentPhoneMask.replace(/[^0-9]/g, '');
-
-          let item = 0;
-
-          if (mask.length >= valueFilter.length) {
-            valueFilter = mask;
-          }
-          
           this.mask('[name="phone"]', form);
-       
         }
+      });
+    });
+  }
+
+  async postData(url, form) {
+    let result = await fetch(url, {
+      method: 'POST',
+      body: form
+    });
+    return await result.text();
+  }
+
+
+  bindFormData(form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+
+      this.showMessage(form, this.message.loading, this.typeStyleMessage);
+
+      this.postData(this.path, formData)
+      .then(data => {
+        console.log(data);
+        this.showMessage(form, this.message.success, this.typeStyleMessage);
+      })
+      .catch(() => {
+        console.log('dont send form');
+        this.showMessage(form, this.message.failure, this.typeStyleMessage);
+      })
+      .finally(() => {
+        form.reset();
       });
     });
   }
 
   render() {
     console.log(this.form);
-    this.validateFormInput(this.form[0])
+    this.validateFormInput(this.form);
+    this.bindFormData(this.form);
   }
 }
