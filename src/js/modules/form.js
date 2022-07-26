@@ -193,10 +193,10 @@ export default class Form {
     });
   }
 
-  async postData(url) {
+  async postData(url, formData) {
     let result = await fetch(url, {
       method: 'POST',
-      body: this.form
+      body: formData
     });
     return await result.text();
   }
