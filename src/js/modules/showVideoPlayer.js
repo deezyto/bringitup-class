@@ -1,4 +1,10 @@
 
+//After clicking on the play button, a modal window with a video player opens, 
+//where there is a video that refers to the play button that was clicked. 
+//Every second video is blocked. After watching an unblocked video, 
+//access to the next blocked video opens (information about which videos 
+//are unblocked is stored in the localStorage)
+
 export default class ShowVideoPlayer {
   constructor({playButtonSelector = null, videoAttribute = null, modalSelector = null, closeModalSelector = null} = {}) {
     this.modalSelector = document.querySelector(modalSelector);
