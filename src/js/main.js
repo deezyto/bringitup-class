@@ -94,14 +94,16 @@ window.addEventListener('DOMContentLoaded', () => {
   try {
     new Form({
       formIndex: 0,
-      typeStyleMessage: 1
+      typeStyleMessage: 1,
+      requiredInput: ['all']
     }).render();
   } catch {}
 
   try {
     new Form({
       formIndex: 1,
-      typeStyleMessage: 2
+      typeStyleMessage: 2,
+      requiredInput: ['all']
     }).render();
   } catch {}
   

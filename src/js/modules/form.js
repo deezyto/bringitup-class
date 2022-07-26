@@ -1,7 +1,8 @@
 
 export default class Form {
-  constructor ({formIndex = 0, typeStyleMessage = 1} = {}) {
+  constructor ({formIndex = 0, typeStyleMessage = 1, requiredInput = null} = {}) {
     this.form = document.querySelectorAll('form')[formIndex];
+    this.requiredInput = requiredInput;
     this.typeStyleMessage = typeStyleMessage;
     this.message = {
       loading: 'Data is being sent...',
@@ -19,7 +20,7 @@ export default class Form {
     this.currentMessage = null;
   }
 
-  showMessage(form, message) {
+  showMessage(message) {
     let style;
     const styleBlue = `
       color: white; border: 1px solid white; 
@@ -43,32 +44,47 @@ export default class Form {
       style = styleWhite;
     }
 
-    if (form.parentNode.querySelector('.message')) {
-      form.parentNode.lastElementChild.textContent = message;
+    if (this.form.parentNode.querySelector('.message')) {
+      this.form.parentNode.lastElementChild.textContent = message;
       clearTimeout(this.currentMessage);
         this.currentMessage = setTimeout(() => {
-          form.parentNode.lastElementChild.remove();
+          this.form.parentNode.lastElementChild.remove();
         }, 5000);
     } else {
       const elem = document.createElement('div');
       elem.classList.add('message', 'animated', 'fadeIn');
       elem.style.cssText = style;
       elem.textContent = message;
-      form.parentNode.appendChild(elem);
+      this.form.parentNode.appendChild(elem);
 
       clearTimeout(this.currentMessage);
       this.currentMessage = setTimeout(() => {
-        form.parentNode.lastElementChild.remove();
+        this.form.parentNode.lastElementChild.remove();
       }, 5000);
     }
 
   }
 
-  removeMessage(form) {
-    if (form.parentNode.querySelector('.message')) {
+  removeMessage() {
+    if (this.form.parentNode.querySelector('.message')) {
       clearTimeout(this.currentMessage);
-      form.parentNode.lastElementChild.remove();
+      this.form.parentNode.lastElementChild.remove();
     }
+  }
+
+  setRequiredToInput() {
+    this.form.querySelectorAll('input').forEach(input => {
+      if (this.requiredInput[0] === 'all') {
+        input.setAttribute('required', 'required');
+      } else if (this.requiredInput) {
+        for (let i = 0; i < this.form.querySelectorAll('input').length; i++) {
+          if (input.name === this.requiredInput[i]) {
+            input.setAttribute('required', 'required');
+            break;
+          }
+        }
+      }
+    });
   }
 
   mask(selector) {
@@ -124,30 +140,30 @@ export default class Form {
     });
   }
 
-  validateFormInput(form) {
-    form.querySelectorAll('input').forEach(input => {
+  validateFormInput() {
+    this.form.querySelectorAll('input').forEach(input => {
       input.addEventListener('input', () => {
         console.log('input');
         if (input.type === 'text' && input.name !== 'phone') {
           const filterValue = input.value.replace(/[^a-zA-Z]/g, '');
           if (/[^a-zA-Z]/g.test(input.value)) {
-            this.showMessage(form, this.message.text);
+            this.showMessage(this.message.text);
           } else {
-            this.removeMessage(form);
+            this.removeMessage();
           }
           input.value = filterValue;
 
         } else if (input.type === 'email') {
           const filterValue = input.value.replace(/[^a-zA-Z0-9.@]/g, '');
           if (/[^a-zA-Z0-9.@]/.test(input.value)) {
-            this.showMessage(form, this.message.email);
+            this.showMessage(this.message.email);
           } else {
-            this.removeMessage(form);
+            this.removeMessage();
           }
           input.value = filterValue;
 
         } else if (input.name === 'phone') {
-          this.mask('[name="phone"]', form);
+          this.mask('[name="phone"]');
 
           const valueInDigits = input.value.replace(/[^0-9]/g, '');
           const filterDigits = input.value.slice(0, input.value.length - 1);
@@ -156,60 +172,60 @@ export default class Form {
             input.value = '+1';
           } else if (valueInDigits[0] !== '1') {
             input.value = '+1';
-            this.showMessage(form, this.message.phone.one);
+            this.showMessage(this.message.phone.one);
           } else if (valueInDigits[1] === '1') {
             input.value = filterDigits;
-            this.showMessage(form, this.message.phone.two);
+            this.showMessage(this.message.phone.two);
           } else if (valueInDigits[2] === '1' && valueInDigits[3] === '1') {
             input.value = filterDigits;
-            this.showMessage(form, this.message.phone.three);
+            this.showMessage(this.message.phone.three);
           } else if (valueInDigits[4] === '1') {
             input.value = filterDigits;
-            this.showMessage(form, this.message.phone.two);
+            this.showMessage(this.message.phone.two);
           } else if (valueInDigits[5] === '1' && valueInDigits[6] === '1') {
             input.value = filterDigits;
-            this.showMessage(form, this.message.phone.three);
+            this.showMessage(this.message.phone.three);
           } else {
-            this.removeMessage(form);
+            this.removeMessage();
           }
         }
       });
     });
   }
 
-  async postData(url, form) {
+  async postData(url) {
     let result = await fetch(url, {
       method: 'POST',
-      body: form
+      body: this.form
     });
     return await result.text();
   }
 
 
-  bindFormData(form) {
-    form.addEventListener('submit', (e) => {
+  bindFormData() {
+    this.form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const formData = new FormData(form);
+      const formData = new FormData(this.form);
 
-      this.showMessage(form, this.message.loading);
+      this.showMessage(this.message.loading);
 
       this.postData(this.path, formData)
       .then(res => {
         console.log(res);
-        this.showMessage(form, this.message.success);
+        this.showMessage(this.message.success);
       })
       .catch(() => {
-        this.showMessage(form, this.message.failure);
+        this.showMessage(this.message.failure);
       })
       .finally(() => {
-        form.reset();
+        this.form.reset();
       });
     });
   }
 
   render() {
-    console.log(this.form);
-    this.validateFormInput(this.form);
-    this.bindFormData(this.form);
+    this.setRequiredToInput();
+    this.validateFormInput();
+    this.bindFormData();
   }
 }
