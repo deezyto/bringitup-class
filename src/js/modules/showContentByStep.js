@@ -1,4 +1,5 @@
-
+//After pressing the button, the next item is displayed, after 
+//displaying the last item, the button disappears
 export default class ShowContentByStep {
   constructor ({parentSelector = null, buttonSelector = null, typeAnimation = 'fadeIn', removeAnimation = false} = {}) {
     this.parentSelector = parentSelector;
