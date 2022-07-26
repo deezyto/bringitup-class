@@ -16,14 +16,12 @@ export default class Form {
       }
     };
     this.path = 'assets/question.php';
-    this.removeMessage = null;
-    this.item = 0;
+    this.currentMessage = null;
   }
 
   showMessage(form, message) {
-    this.item = 1;
     let style;
-    let styleBlue = `
+    const styleBlue = `
       color: white; border: 1px solid white; 
       border-radius: 5px; width: 335px; 
       font-size: 15px;
@@ -31,8 +29,8 @@ export default class Form {
       margin-top: 34px;
       box-shadow: 2px 0px 3px green;
     `;
-    let styleWhite = `
-      color: white; border: 1px solid white; 
+    const styleWhite = `
+      color: grba(0, 0, 0, 0.8); border: 1px solid white; 
       border-radius: 5px; width: 335px; 
       padding: 10px;
       font-size: 15px;
@@ -41,14 +39,14 @@ export default class Form {
     `;
     if (this.typeStyleMessage === 1) {
       style = styleBlue;
-    } else {
+    } else if (this.typeStyleMessage === 2) {
       style = styleWhite;
     }
 
     if (form.parentNode.querySelector('.message')) {
       form.parentNode.lastElementChild.textContent = message;
-      clearTimeout(this.removeMessage);
-        this.removeMessage = setTimeout(() => {
+      clearTimeout(this.currentMessage);
+        this.currentMessage = setTimeout(() => {
           form.parentNode.lastElementChild.remove();
         }, 5000);
     } else {
@@ -58,28 +56,24 @@ export default class Form {
       elem.textContent = message;
       form.parentNode.appendChild(elem);
 
-      clearTimeout(this.removeMessage);
-      this.removeMessage = setTimeout(() => {
+      clearTimeout(this.currentMessage);
+      this.currentMessage = setTimeout(() => {
         form.parentNode.lastElementChild.remove();
       }, 5000);
     }
 
   }
 
-  removeMessageText(form) {
-    if (form.parentNode.querySelector('.message') && this.item === 1) {
-      clearTimeout(this.removeMessage);
+  removeMessage(form) {
+    if (form.parentNode.querySelector('.message')) {
+      clearTimeout(this.currentMessage);
       form.parentNode.lastElementChild.remove();
     }
-    this.item = 0;
   }
 
-  mask(selector, form) {
-    let global = this;
-    
+  mask(selector) {
     function setCursorPosition(pos, elem) {
       elem.focus();
-  
       if (elem.setSelectionRange) {
         elem.setSelectionRange(pos, pos);
       } else if (elem.createTextRange) {
@@ -93,8 +87,6 @@ export default class Form {
   
     function createMask(event){
       let self = this;
-
-      console.log(self.value, 'value');
   
       let matrix = '+1(___) ___-____';
       let def = matrix.replace(/\D/g, '');
@@ -106,31 +98,13 @@ export default class Form {
       }
       
       self.value = matrix.replace(/./g, function(a) {
-  
         if (/[_\d]/.test(a) && i < val.length) {
-          if (val.charAt(0) !== '1' && i === 0) {
-            i++;
-            global.showMessage(form, global.message.phone.one);
-            return '1';
-          } else if (val.charAt(1) === '1' && i === 1 || val.charAt(4) === '1' && i === 4) {
-            i++;
-            global.showMessage(form, global.message.phone.two);
-            return '';
-          } else if (val.charAt(2) === '1' && val.charAt(3) === '1' && i === 3 || val.charAt(5) === '1' && val.charAt(6) === '1' && i === 6) {
-            i++;
-            global.showMessage(form, global.message.phone.three);
-            return '';
-          } else {
-            //global.removeMessageText(form);
-            return val.charAt(i++);
-          }
-
+          return val.charAt(i++);
         } else if (i >= val.length) {
           return '';
         } else {
           return a;
         }
-  
       });
   
       if (event.type === 'blur') {
@@ -152,18 +126,52 @@ export default class Form {
 
   validateFormInput(form) {
     form.querySelectorAll('input').forEach(input => {
-      input.addEventListener('input', (e) => {
+      input.addEventListener('input', () => {
         console.log('input');
         if (input.type === 'text' && input.name !== 'phone') {
           const filterValue = input.value.replace(/[^a-zA-Z]/g, '');
+          if (/[^a-zA-Z]/g.test(input.value)) {
+            this.showMessage(form, this.message.text);
+          } else {
+            this.removeMessage(form);
+          }
           input.value = filterValue;
 
         } else if (input.type === 'email') {
           const filterValue = input.value.replace(/[^a-zA-Z0-9.@]/g, '');
+          if (/[^a-zA-Z0-9.@]/.test(input.value)) {
+            this.showMessage(form, this.message.email);
+          } else {
+            this.removeMessage(form);
+          }
           input.value = filterValue;
 
         } else if (input.name === 'phone') {
           this.mask('[name="phone"]', form);
+
+          const valueInDigits = input.value.replace(/[^0-9]/g, '');
+          const filterDigits = input.value.slice(0, input.value.length - 1);
+
+          if (input.value[0] === '1') {
+            input.value = '+1';
+          } else if (valueInDigits[0] !== '1') {
+            input.value = '+1';
+            this.showMessage(form, this.message.phone.one);
+          } else if (valueInDigits[1] === '1') {
+            input.value = filterDigits;
+            this.showMessage(form, this.message.phone.two);
+          } else if (valueInDigits[2] === '1' && valueInDigits[3] === '1') {
+            input.value = filterDigits;
+            this.showMessage(form, this.message.phone.three);
+          } else if (valueInDigits[4] === '1') {
+            input.value = filterDigits;
+            this.showMessage(form, this.message.phone.two);
+          } else if (valueInDigits[5] === '1' && valueInDigits[6] === '1') {
+            input.value = filterDigits;
+            this.showMessage(form, this.message.phone.three);
+          } else {
+            this.removeMessage(form);
+          }
         }
       });
     });
@@ -181,19 +189,17 @@ export default class Form {
   bindFormData(form) {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-
       const formData = new FormData(form);
 
-      this.showMessage(form, this.message.loading, this.typeStyleMessage);
+      this.showMessage(form, this.message.loading);
 
       this.postData(this.path, formData)
-      .then(data => {
-        console.log(data);
-        this.showMessage(form, this.message.success, this.typeStyleMessage);
+      .then(res => {
+        console.log(res);
+        this.showMessage(form, this.message.success);
       })
       .catch(() => {
-        console.log('dont send form');
-        this.showMessage(form, this.message.failure, this.typeStyleMessage);
+        this.showMessage(form, this.message.failure);
       })
       .finally(() => {
         form.reset();

@@ -93,7 +93,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
   try {
     new Form({
-      
+      formIndex: 0,
+      typeStyleMessage: 1
+    }).render();
+  } catch {}
+
+  try {
+    new Form({
+      formIndex: 1,
+      typeStyleMessage: 2
     }).render();
   } catch {}
   
