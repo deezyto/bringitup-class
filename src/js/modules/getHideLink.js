@@ -1,4 +1,7 @@
 
+//After clicking the donwload button, a link to the file is created, 
+//after the file download starts, the link is deleted.
+
 export default class GetHideLink {
   constructor ({parentSelector = null, buttonSelector = null} = {}) {
     this.parentSelector = document.querySelectorAll(parentSelector);
