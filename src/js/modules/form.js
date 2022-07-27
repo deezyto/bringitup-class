@@ -1,4 +1,12 @@
 
+
+//Checks the data entered in the input, displays a message 
+//if an invalid character is entered, adds the required parameter 
+//and the pattern parameter to the specified inputs. Sends data from 
+//the form to the server (for the test, the Mamp server is used)
+//you can install mamp server, comment the previous const dist, and 
+//uncomment the next const dist
+
 export default class Form {
   constructor ({formIndex = 0, typeStyleMessage = 1, requiredInput = null} = {}) {
     this.form = document.querySelectorAll('form')[formIndex];
@@ -8,12 +16,12 @@ export default class Form {
       loading: 'Data is being sent...',
       success: 'Thank you, we will call you soon!',
       failure: 'Something went wrong...',
-      text: 'You must enter more than 1 letter character',
+      text: 'You must enter letter character',
       email: 'Please enter correct email: name@site.com',
       phone: {
-        one: `The phone number must start with the number 1. Please enter correct phone: +1(234) 375-250`,
-        two: `The first of the three digits must be in the range 2-9. Please enter correct phone: +1(234) 375-250`,
-        three: `The last two digits cannot be 11. Please enter correct phone: +1(234) 375-250`
+        one: 'The phone number must start with the number 1. Please enter correct phone: +1 (234) 375-2500',
+        two: 'The first of the three digits must be in the range 2-9. Please enter correct phone: +1 (234) 375-2500',
+        three: 'The last two digits cannot be 11. Please enter correct phone: +1 (234) 375-2500'
       }
     };
     this.path = 'assets/question.php';
@@ -31,7 +39,7 @@ export default class Form {
       box-shadow: 2px 0px 3px green;
     `;
     const styleWhite = `
-      color: grba(0, 0, 0, 0.8); border: 1px solid white; 
+      color: rgba(0, 0, 0, 0.8); border: 1px solid white; 
       border-radius: 5px; width: 335px; 
       padding: 10px;
       font-size: 15px;
@@ -74,13 +82,42 @@ export default class Form {
 
   setRequiredToInput() {
     this.form.querySelectorAll('input').forEach(input => {
-      if (this.requiredInput[0] === 'all') {
+      if (this.requiredInput === 'all') {
         input.setAttribute('required', 'required');
       } else if (this.requiredInput) {
-        for (let i = 0; i < this.form.querySelectorAll('input').length; i++) {
-          if (input.name === this.requiredInput[i]) {
-            input.setAttribute('required', 'required');
-            break;
+        let typeCharacter;
+        if (this.requiredInput.all) {
+          input.setAttribute('required', 'required');
+          input.setAttribute('title', 'You must enter more 1 character');
+        }
+        for (let item in this.requiredInput) {
+          if (this.requiredInput[item].type === 'number') {
+            typeCharacter = 'digits';
+            if (this.requiredInput[item].minLength < 2) {
+              typeCharacter = 'digit';
+            }
+          } else {
+            typeCharacter = 'characters';
+            if (this.requiredInput[item].minLength < 2) {
+              typeCharacter = 'character';
+            }
+          }
+
+          if (item === input.name) {
+            if (this.requiredInput[item].required) {
+              input.setAttribute('required', 'required');
+            }
+
+            if (this.requiredInput[item].minLength && !this.requiredInput[item].maxLength) {
+              input.setAttribute('pattern', `.{${this.requiredInput[item].minLength},}`);
+              input.setAttribute('title', `You must enter more ${this.requiredInput[item].minLength} ${typeCharacter}`);
+            } else if (!this.requiredInput[item].minLength && this.requiredInput[item].maxLength) {
+              input.setAttribute('pattern', `.{0,${this.requiredInput[item].maxLength}}`);
+              input.setAttribute('title', `You must enter up to ${this.requiredInput[item].maxLength} ${typeCharacter}`);
+            } else if (this.requiredInput[item].minLength && this.requiredInput[item].maxLength) {
+              input.setAttribute('pattern', `.{${this.requiredInput[item].minLength},${this.requiredInput[item].maxLength}}`);
+              input.setAttribute('title', `You must enter ${this.requiredInput[item].minLength} to ${this.requiredInput[item].maxLength} ${typeCharacter}`);
+            }
           }
         }
       }

@@ -95,7 +95,15 @@ window.addEventListener('DOMContentLoaded', () => {
     new Form({
       formIndex: 0,
       typeStyleMessage: 1,
-      requiredInput: ['all']
+      requiredInput: {
+        all: true,
+        phone: {
+          required: true,
+          type: 'number',
+          minLength: 16,
+          maxLength: 0
+        },
+      }
     }).render();
   } catch {}
 
@@ -103,7 +111,7 @@ window.addEventListener('DOMContentLoaded', () => {
     new Form({
       formIndex: 1,
       typeStyleMessage: 2,
-      requiredInput: ['all']
+      requiredInput: 'all'
     }).render();
   } catch {}
   
